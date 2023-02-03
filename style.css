@@ -1,0 +1,137 @@
+/* GLOBAL STYLE */
+menuitem{
+     background: rgb(255, 196, 0);
+     padding-top: 10px;
+     padding-bottom: 10px;
+     color: black;
+}
+
+menuitem:hover{
+     background: whitesmoke;
+}
+
+.stack-switcher > .needs-attention {
+	background : white;
+    color: blue;
+    font-size: 20px;
+    border-bottom: solid 5px #6d6d6d;
+    border-left: solid 5px #6d6d6d;
+    border-right: solid 5px #6d6d6d;
+    padding:2px 5px;
+
+}
+
+.stack-switcher > .needs-attention:checked{
+	background : #362415;
+    color: #eee;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.stack-switcher > .needs-attention:hover{
+	background : #362415;
+    color: #eee;
+    font-size: 20px;
+}
+
+button{
+     background: rgb(255,236,196);
+     border: none;
+     color: black;
+}
+
+#myWindow{
+     background-image: url('img/desk.png');
+}
+
+#lb_uid{
+	background-color: transparent;
+    text-shadow: 5px 2px white;
+    color: red;
+    font-weight: bold;
+    font-size: 30px;
+    font-family: Georgia, serif;
+}
+
+#lb_saldo{
+	background-color: transparent;
+    text-shadow: 3px 2px white;
+    color: red;
+    font-weight: bold;
+    font-size: 30px;
+    font-family: Georgia, serif;
+}
+
+#lb_status{
+	background-color: transparent;
+    text-shadow: 3px 2px white;
+    color: red;
+    font-weight: bold;
+    font-size: 30px;
+    font-family: Georgia, serif;
+}
+
+#value_uid, #value_saldo, #value_status{
+	background-color: transparent;
+    text-shadow: 3px 1px white;
+    color: blue;
+    font-weight: bold;
+    font-size: 25px;
+    font-family: Georgia, serif;
+}
+
+#main_grid_home{
+	padding-top:10px;
+}
+
+#timer{
+     background-color: transparent;
+     text-shadow: 5px 2px red;
+     color: white;
+     font-weight: bold;
+     font-size: 20px;
+     font-family: Georgia, serif;
+     
+}
+
+#lb_server{
+     background-color: transparent;
+     color: white;
+     font-weight: bold;
+     font-size: 20px;
+     font-family: Georgia, serif;
+     
+}
+
+#log_lb_no, #log_lb_waktu,#log_lb_uid,#log_lb_cabang,#log_lb_gerbang,#log_lb_gardu,#log_lb_saldoawal,#log_lb_tarif,#log_lb_saldoakhir,#log_lb_status{
+	background-color: transparent;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    text-decoration-line: underline;
+
+}
+
+#log_lb_no2, #log_lb_waktu2,#log_lb_status2{
+	background-color: transparent;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    text-decoration-line: underline;
+
+}
+
+#log_1, #log_2,#log_3,#log_4,#log_5,#log_6,#log_7,#log_8,#log_9,#log_10{
+
+}
+
+#bt_clear_log, #bt_clear_log1{
+     background-image: none;
+     background-color: white;
+     border: none;
+     border-radius:10px
+}
+
+#bt_clear_log:hover, #bt_clear_log1:hover{
+     background-color: #00ff00;
+}
