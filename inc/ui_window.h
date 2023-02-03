@@ -37,7 +37,7 @@ typedef struct _window_clock
 
 }Window_clock;
 
-extern Window_clock *ui_clock;
+extern Window_clock ui_clock;
 
 void gtk_builder_and_attrib_init();
 void ui_gtk_get_object();
