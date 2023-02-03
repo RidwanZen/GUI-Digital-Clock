@@ -39,10 +39,41 @@ typedef struct _window_clock
 
 extern Window_clock ui_clock;
 
+// typedef struct _day_name
+// {
+//     char *sunday = "SUN";
+//     char *monday = "MON";
+//     char *tuesday = "TUE";
+//     char *wednesday = "WED";
+//     char *thursday = "THU";
+//     char *friday = "FRI";
+//     char *saturday = "SAT";
+// }Day_name;
+
+// extern Day_name day_name;
+
+extern const char *day_name[7] =
+{
+  "SUN",
+  "MON",
+  "TUE",
+  "WED",
+  "THU",
+  "FRI",
+  "SAT"
+};
+
 void gtk_builder_and_attrib_init();
 void ui_gtk_get_object();
 void gtk_mainWindow_setAttrib();
 void gtk_mainWindow_connect();
+static void ui_gtk_widget_signal_connect();
+
+static gboolean ui_load_image_helper(GtkWidget **_widget,int _width,int _height,char *_file);
+static void ui_gtk_set_image();
+static gboolean ui_gtk_set_label_text(GtkWidget **_widget, char *_text);
+static void ui_set_label_color(GtkWidget **_widget, char *_color);
 gboolean ui_is_gui_running();
+gboolean ui_update(gpointer not_used);
 
 #endif

@@ -40,34 +40,29 @@ button{
      color: black;
 }
 
-#myWindow{
-     background-image: url('img/desk.png');
+#bt_alarm:hover{
+    background: rgb(248, 83, 33);
+    border: none;
+    color: black;
 }
 
-#lb_uid{
+#window1{
+     background-image: url('asset/img/desk.png');
+}
+
+#lb_name{
 	background-color: transparent;
-    text-shadow: 5px 2px white;
-    color: red;
+    color: rgb(255, 255, 255);
     font-weight: bold;
     font-size: 30px;
     font-family: Georgia, serif;
 }
 
-#lb_saldo{
+#lb_hari, #lb_temp, #lb_alarm{
 	background-color: transparent;
-    text-shadow: 3px 2px white;
-    color: red;
+    color: rgb(255, 0, 0);
     font-weight: bold;
-    font-size: 30px;
-    font-family: Georgia, serif;
-}
-
-#lb_status{
-	background-color: transparent;
-    text-shadow: 3px 2px white;
-    color: red;
-    font-weight: bold;
-    font-size: 30px;
+    font-size: 90px;
     font-family: Georgia, serif;
 }
 

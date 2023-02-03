@@ -364,9 +364,10 @@
                     <property name="can_focus">False</property>
                     <property name="halign">center</property>
                     <property name="valign">end</property>
+                    <property name="margin_top">10</property>
                     <property name="label" translatable="yes">WED</property>
                     <attributes>
-                      <attribute name="font-desc" value="Yrsa Bold Italic 38"/>
+                      <attribute name="font-desc" value="Sawasdee Bold 30"/>
                     </attributes>
                   </object>
                   <packing>

@@ -17,25 +17,35 @@
 
 Window_clock ui_clock;
 
+const char *day_name[];
+
 GtkBuilder *builder;
 GtkCssProvider *cssProvider;
 
+
+
 gboolean isGuiRunning = FALSE;
+
+int i=0;
 
 int main(int argc, char **argv)
 {
     //start ui
     debug(__func__,"INFO:","GUI START");
+	debug(__func__,"INFO:", "GUI VERSION : %s", VERSION);
     gtk_init(&argc, &argv);
 	gtk_builder_and_attrib_init();
 	ui_gtk_get_object();
 	gtk_mainWindow_setAttrib();
+	ui_gtk_widget_signal_connect();
+	ui_gtk_set_image();
 	gtk_builder_connect_signals(builder, NULL);
-
+	// g_timeout_add_seconds(1, (GSourceFunc) timer_handler, ui_clock.label_tanggal);
     gtk_widget_show(ui_clock.window);
-			printf("tes\n");
 	g_object_unref(builder);
+	gdk_threads_add_idle(ui_update, NULL);
 	gtk_main();
+	return 0;
 }
 
 void gtk_builder_and_attrib_init(){
@@ -77,19 +87,20 @@ void ui_gtk_get_object(){
 	gtk_get_object_helper(&ui_clock.icon2			, "icon2");
 	gtk_get_object_helper(&ui_clock.icon_alarm		, "icon_alarm");
 	gtk_get_object_helper(&ui_clock.label_name		, "lb_name");
-	gtk_get_object_helper(&ui_clock.label_alarm	, "lb_alarm");
+	gtk_get_object_helper(&ui_clock.label_alarm		, "lb_alarm");
 	gtk_get_object_helper(&ui_clock.label_tanggal	, "lb_tanggal");
-	gtk_get_object_helper(&ui_clock.label_titik	, "lb_titik");
+	gtk_get_object_helper(&ui_clock.label_titik		, "lb_titik");
 	gtk_get_object_helper(&ui_clock.label_suhu		, "lb_suhu");
 	gtk_get_object_helper(&ui_clock.label_temp		, "lb_temp");
 	gtk_get_object_helper(&ui_clock.label_hari		, "lb_hari");
 	gtk_get_object_helper(&ui_clock.label_catatan	, "lb_catatan");
 	gtk_get_object_helper(&ui_clock.label_creator	, "lb_creator");
-	gtk_get_object_helper(&ui_clock.value_alarm	, "value_alarm");
-	gtk_get_object_helper(&ui_clock.value_waktu	, "value_waktu");
-	gtk_get_object_helper(&ui_clock.value_detik	, "value_detik");
+	gtk_get_object_helper(&ui_clock.value_alarm		, "value_alarm");
+	gtk_get_object_helper(&ui_clock.value_waktu		, "value_waktu");
+	gtk_get_object_helper(&ui_clock.value_detik		, "value_detik");
 	gtk_get_object_helper(&ui_clock.value_suhu		, "value_suhu");
-	gboolean ui_is_gui_running()
+
+gboolean ui_is_gui_running()
 	{
     	return isGuiRunning;
 	}
@@ -101,12 +112,71 @@ gboolean ui_is_gui_running(){
 }
 
 void gtk_mainWindow_setAttrib(){
-	//~ gtk_window_fullscreen(GTK_WINDOW(ui_clock->window));
+	// gtk_window_fullscreen(GTK_WINDOW(ui_clock.window));
 
 	gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(cssProvider), GTK_STYLE_PROVIDER_PRIORITY_USER);
 
 }
 
+static void ui_gtk_set_image(){
+	ui_load_image_helper(&ui_clock.icon_alarm,50,50,"asset/img/alarm-icon.png");
+	ui_load_image_helper(&ui_clock.icon1,30,30,"asset/img/alarm-icon.png");
+	ui_load_image_helper(&ui_clock.icon2,30,30,"asset/img/alarm-icon.png");
+
+	
+}
+
+static void ui_gtk_widget_signal_connect(){
+	g_signal_connect(ui_clock.window, "destroy", (GCallback) exit, NULL);
+}
+
 void gtk_mainWindow_connect(){
 
+}
+
+static void ui_set_label_color(GtkWidget **_widget, char *_color){
+	GdkColor color;
+	gdk_color_parse(_color, &color);
+	gtk_widget_modify_fg(*_widget, GTK_STATE_NORMAL, &color);
+}
+
+static gboolean ui_load_image_helper(GtkWidget **_widget,int _width,int _height,char *_file){
+	GdkPixbuf * img_loader = NULL;
+	GdkPixbuf * img = NULL;
+	GError * err = NULL;
+	img_loader = gdk_pixbuf_new_from_file (_file, &err);
+	if(!img_loader){
+		if(err){
+			if(err->code==2) debug(__func__,"ERROR:","[%d] FAILED TO LOAD IMAGE %s",_file);
+			else printf("[%d] %s\n",err->code,err->message);
+			g_error_free (err);
+		}
+		return TRUE;
+	}
+	img = gdk_pixbuf_scale_simple(img_loader, _width, _height, GDK_INTERP_BILINEAR);
+	g_object_unref(img_loader);
+	if(!img) return TRUE;
+	gtk_image_set_from_pixbuf ((GtkImage *)*_widget, img);
+	g_object_unref(img);
+	return FALSE;
+}
+
+static gboolean ui_gtk_set_label_text(GtkWidget **_widget, char *_text){
+	gtk_label_set_text ((GtkLabel *)*_widget, _text);
+	return FALSE;
+}
+
+gboolean ui_update(gpointer not_used){
+
+	printf("%s\n", day_name[i]);
+	ui_gtk_set_label_text(&ui_clock.label_hari, day_name[i]);
+	if(i==0)ui_set_label_color(&ui_clock.label_suhu, "000000");
+	if(i==2)ui_set_label_color(&ui_clock.label_suhu, "blue");
+	if(i==4)ui_set_label_color(&ui_clock.label_suhu, "green");
+	if(i==7)ui_set_label_color(&ui_clock.label_suhu, "orange");
+	i++;
+	if(i==7)i=0;
+	sleep(1);
+
+	return TRUE;
 }
