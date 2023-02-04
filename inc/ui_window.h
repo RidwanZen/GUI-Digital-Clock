@@ -70,10 +70,11 @@ void gtk_mainWindow_connect();
 static void ui_gtk_widget_signal_connect();
 
 static gboolean ui_load_image_helper(GtkWidget **_widget,int _width,int _height,char *_file);
-static void ui_gtk_set_image();
+void ui_gtk_set_image();
 static gboolean ui_gtk_set_label_text(GtkWidget **_widget, char *_text);
-static void ui_set_label_color(GtkWidget **_widget, char *_color);
+static gboolean ui_set_label_color(GtkWidget **_widget, char *_color);
 gboolean ui_is_gui_running();
 gboolean ui_update(gpointer not_used);
+static void ui_lbl_dtime();
 
 #endif
