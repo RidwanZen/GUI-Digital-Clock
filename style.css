@@ -46,8 +46,9 @@ button{
     color: black;
 }
 
-#window1{
-     background-image: url('asset/img/desk.png');
+#window{
+     /* background-image: url('asset/img/desk.png'); */
+     background: rgb(146, 109, 168);
 }
 
 #lb_name{
@@ -60,19 +61,35 @@ button{
 
 #lb_hari, #lb_temp, #lb_alarm{
 	background-color: transparent;
-    color: rgb(255, 0, 0);
+    color: rgb(145, 255, 0);
     font-weight: bold;
     font-size: 90px;
     font-family: Georgia, serif;
 }
 
-#value_uid, #value_saldo, #value_status{
-	background-color: transparent;
-    text-shadow: 3px 1px white;
-    color: blue;
+#value_waktu{
+        background-color: transparent;
+    color: orange;
     font-weight: bold;
-    font-size: 25px;
+    font-size: 90px;
     font-family: Georgia, serif;
+}
+
+#lb_waktu{
+        background-color: transparent;
+    color: yellow;
+    font-weight: bold;
+    font-size: 30px;
+    font-family: Georgia, serif;
+}
+
+#lb_catatan, #lb_creator{
+     background-color: transparent;
+     text-shadow: 0px 0px red;
+     color: yellow;
+     font-weight: bold;
+     font-size: 20px;
+     font-family: Georgia, serif;
 }
 
 #main_grid_home{

@@ -22,8 +22,8 @@ typedef enum {
 } time_format;
 
 typedef enum {
-    hour_12 = 0,
-    hour_24 = 1
+    format_12 = 0,
+    format_24 = 1
 } time_format_hour;
 
 typedef enum {
@@ -129,7 +129,7 @@ void stim_get_date_colon_manual(char* tim_str, long _time, date_format _format);
 void stim_get_date_dot_manual(char* tim_str, long _time, date_format _format);
 void stim_get_time_dash_auto(char* tim_str);
 void stim_get_time_slash_auto(char* tim_str);
-void stim_get_time_colon_auto(char* tim_str, time_format _format);
+void stim_get_time_colon_auto(char* tim_str, time_format _format, time_format_hour *_format_time);
 void stim_get_time_dot_auto(char* tim_str);
 void stim_get_time_dash_manual(char* tim_str, long time_now);
 void stim_get_time_slash_manual(char* tim_str, long time_now);

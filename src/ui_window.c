@@ -17,6 +17,7 @@
 #define VERSION         "V0.1"
 
 Window_clock ui_clock;
+Window_alarm ui_alarm;
 
 const char *day_name[];
 
@@ -39,6 +40,7 @@ int main(int argc, char **argv)
 	ui_gtk_get_object();
 	gtk_mainWindow_setAttrib();
 	ui_gtk_widget_signal_connect();
+	gtk_mainWindow_connect();
 	ui_gtk_set_image();
 	gtk_builder_connect_signals(builder, NULL);
 	g_timeout_add_seconds(1, (GSourceFunc) ui_update, NULL);
@@ -102,6 +104,11 @@ void ui_gtk_get_object(){
 	gtk_get_object_helper(&ui_clock.value_waktu		, "value_waktu");
 	gtk_get_object_helper(&ui_clock.value_detik		, "value_detik");
 	gtk_get_object_helper(&ui_clock.value_suhu		, "value_suhu");
+	gtk_get_object_helper(&ui_clock.button_alarm	, "bt_alarm");
+
+
+	gtk_get_object_helper(&ui_alarm.window_alarm	, "window_alarm");
+	gtk_get_object_helper(&ui_alarm.button_close	, "bt_close");
 
 gboolean ui_is_gui_running()
 	{
@@ -116,9 +123,18 @@ gboolean ui_is_gui_running(){
 
 void gtk_mainWindow_setAttrib(){
 	// gtk_window_fullscreen(GTK_WINDOW(ui_clock.window));
+	// gtk_window_fullscreen(GTK_WINDOW(ui_alarm.window_alarm));
 
 	gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(cssProvider), GTK_STYLE_PROVIDER_PRIORITY_USER);
 
+}
+
+static void view_windowAlarm(){
+	gtk_widget_show(ui_alarm.window_alarm);
+}
+
+static void close_windowAlarm(){
+	gtk_widget_hide(ui_alarm.window_alarm);
 }
 
 void ui_gtk_set_image(){
@@ -134,7 +150,8 @@ static void ui_gtk_widget_signal_connect(){
 }
 
 void gtk_mainWindow_connect(){
-
+	g_signal_connect(ui_clock.button_alarm, "clicked", G_CALLBACK (view_windowAlarm), NULL);
+	g_signal_connect(ui_alarm.button_close, "clicked", G_CALLBACK (close_windowAlarm), NULL);
 }
 
 static gboolean ui_set_label_color(GtkWidget **_widget, char *_color){
@@ -188,10 +205,10 @@ static void ui_lbl_dtime(){
     stim_get_date_custom_auto(tmp,date_format_custom1_eng);
     gtk_label_set_text ((GtkLabel *) ui_clock.label_tanggal, tmp);	
     //set waktu (jam & menit)
-	stim_get_time_colon_auto(tmp,hhmm);
+	stim_get_time_colon_auto(tmp,hhmm,format_12);
     gtk_label_set_text ((GtkLabel *) ui_clock.value_waktu, tmp);
 	//set detik
-	stim_get_time_colon_auto(tmp,ss);
+	stim_get_time_colon_auto(tmp,ss,NULL);
     gtk_label_set_text ((GtkLabel *) ui_clock.value_detik, tmp);
 	//set day
 	stim_get_wday_eng_short(_wday_name, mtm->tm_wday);

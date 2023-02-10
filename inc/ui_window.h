@@ -34,10 +34,20 @@ typedef struct _window_clock
     GtkWidget *value_waktu;
     GtkWidget *value_detik;
     GtkWidget *value_suhu;
+    GtkWidget *button_alarm;
 
 }Window_clock;
 
 extern Window_clock ui_clock;
+
+typedef struct _window_alarm
+{
+    GtkWidget *window_alarm;
+    GtkWidget *button_close;
+
+}Window_alarm;
+
+extern Window_alarm ui_alarm;
 
 // typedef struct _day_name
 // {
@@ -76,5 +86,8 @@ static gboolean ui_set_label_color(GtkWidget **_widget, char *_color);
 gboolean ui_is_gui_running();
 gboolean ui_update(gpointer not_used);
 static void ui_lbl_dtime();
+
+static void view_windowAlarm();
+static void close_windowAlarm();
 
 #endif

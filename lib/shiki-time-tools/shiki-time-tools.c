@@ -18,8 +18,9 @@ void stim_get_maridiem(char* maridiem_str){
     time_t time_now;
     struct tm *mtm;
     char hour_str[MAX_LEN_TIME];
-    char Meridiem[2]; // Make the AM or PM array  
+    char Meridiem[MAX_LEN_TIME]; // Make the AM or PM array  
     memset(hour_str, 0x00, MAX_LEN_TIME*sizeof(char));
+    memset(Meridiem, 0x00, MAX_LEN_TIME*sizeof(char));
     time(&time_now);
     mtm = localtime(&time_now);
     sprintf(hour_str, "%02d", mtm->tm_hour);
@@ -601,19 +602,27 @@ void stim_get_time_slash_auto(char* tim_str){
     strcpy(tim_str, time_str);
 }
 
-void stim_get_time_colon_auto(char* tim_str, time_format _format){
+void stim_get_time_colon_auto(char* tim_str, time_format _format, time_format_hour *_format_time){
     time_t time_now;
     struct tm *mtm;
     char time_str[MAX_LEN_TIME];
     memset(time_str, 0x00, MAX_LEN_TIME*sizeof(char));
     time(&time_now);
     mtm = localtime(&time_now);
+    char format_hour;
+
+    if(_format_time == format_12){
+        format_hour = mtm->tm_hour%12;
+    }
+    else{
+        format_hour = mtm->tm_hour;
+    }
 
     if(_format == hhmmss){
         sprintf(time_str, "%02d:%02d:%02d", mtm->tm_hour, mtm->tm_min, mtm->tm_sec);
     }
     if(_format == hhmm){
-        sprintf(time_str, "%02d:%02d", mtm->tm_hour, mtm->tm_min);
+        sprintf(time_str, "%02d:%02d", format_hour, mtm->tm_min);
     }
     if(_format == ss){
         sprintf(time_str, "%02d", mtm->tm_sec);
