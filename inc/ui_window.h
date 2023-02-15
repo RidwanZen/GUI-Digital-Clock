@@ -43,7 +43,29 @@ extern Window_clock ui_clock;
 typedef struct _window_alarm
 {
     GtkWidget *window_alarm;
+    GtkWidget *w_alarm_box;
+    GtkWidget *box4;
+    GtkWidget *box5;
+    GtkWidget *scroller_window;
+    GtkWidget *view_port;
+    GtkWidget *grid_alarm;
+    GtkWidget *grid_message;
+    GtkWidget *grid_edit;
+    GtkWidget *grid_delete;
     GtkWidget *button_close;
+    GtkWidget *button_add_alarm;
+    GtkWidget *label_header_alarm;
+    GtkWidget *label_list_alarm;
+    GtkWidget *label_list_message;
+    GtkWidget *icon_add;
+
+    GtkWidget *label1[50];
+    GtkWidget *label2[50];
+    GtkWidget *button_edit_alarm[50];
+    GtkWidget *button_delete_alarm[50];
+    GtkWidget *icon_edit;
+    GtkWidget *icon_remove;
+    GtkWidget *hbox[50];
 
 }Window_alarm;
 
@@ -89,5 +111,7 @@ static void ui_lbl_dtime();
 
 static void view_windowAlarm();
 static void close_windowAlarm();
+
+void list_alarm();
 
 #endif

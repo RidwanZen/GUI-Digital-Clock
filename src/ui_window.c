@@ -108,7 +108,20 @@ void ui_gtk_get_object(){
 
 
 	gtk_get_object_helper(&ui_alarm.window_alarm	, "window_alarm");
+	gtk_get_object_helper(&ui_alarm.w_alarm_box		, "w_alarm_box");
+	gtk_get_object_helper(&ui_alarm.box4			, "box4");
+	gtk_get_object_helper(&ui_alarm.box5			, "box5");
+	gtk_get_object_helper(&ui_alarm.scroller_window	, "scroller_window");
+	gtk_get_object_helper(&ui_alarm.view_port		, "view_port");
+	// gtk_get_object_helper(&ui_alarm.grid_alarm		, "grid_alarm");
+	// gtk_get_object_helper(&ui_alarm.grid_message	, "grid_message");
+	// gtk_get_object_helper(&ui_alarm.grid_edit		, "grid_edit");
+	// gtk_get_object_helper(&ui_alarm.grid_delete		, "grid_delete");
 	gtk_get_object_helper(&ui_alarm.button_close	, "bt_close");
+	gtk_get_object_helper(&ui_alarm.button_add_alarm	, "bt_add_alarm");
+	gtk_get_object_helper(&ui_alarm.label_header_alarm	, "lb_header_alarm");
+	gtk_get_object_helper(&ui_alarm.label_list_alarm	, "lb_list_alarm");
+	gtk_get_object_helper(&ui_alarm.label_list_message	, "lb_list_message");
 
 gboolean ui_is_gui_running()
 	{
@@ -130,10 +143,13 @@ void gtk_mainWindow_setAttrib(){
 }
 
 static void view_windowAlarm(){
-	gtk_widget_show(ui_alarm.window_alarm);
+	// gtk_widget_show(ui_alarm.window_alarm);
+	gtk_widget_show_all(ui_alarm.window_alarm);
+	gtk_widget_hide(ui_clock.window);
 }
 
 static void close_windowAlarm(){
+	gtk_widget_show_all(ui_clock.window);
 	gtk_widget_hide(ui_alarm.window_alarm);
 }
 
@@ -141,7 +157,6 @@ void ui_gtk_set_image(){
 	ui_load_image_helper(&ui_clock.icon_alarm,50,50,"asset/img/alarm-icon.png");
 	ui_load_image_helper(&ui_clock.icon1,30,30,"asset/img/alarm-icon.png");
 	ui_load_image_helper(&ui_clock.icon2,30,30,"asset/img/alarm-icon.png");
-
 	
 }
 
@@ -190,6 +205,7 @@ static gboolean ui_gtk_set_label_text(GtkWidget **_widget, char *_text){
 gboolean ui_update(gpointer not_used){
 
 	ui_lbl_dtime(NULL);
+	list_alarm();
 
 	return TRUE;
 }
@@ -217,4 +233,73 @@ static void ui_lbl_dtime(){
 	stim_get_maridiem(tmp);
 	gtk_label_set_text ((GtkLabel *) ui_clock.label_waktu, tmp);
 	while(gtk_events_pending()) gtk_main_iteration();
+}
+
+void list_alarm(){
+
+	if(i<10){
+		ui_alarm.hbox[i] = gtk_hbox_new(0,0);
+		gtk_container_add(GTK_CONTAINER(ui_alarm.box5), ui_alarm.hbox[i]);
+
+		ui_alarm.label1[i] = gtk_label_new(NULL);
+		ui_alarm.label2[i] = gtk_label_new("Message123213213213121231232131321");
+		const char *value = "Alarm";
+		char *markup = g_strdup_printf ("<span font=\"14\" color=\"red\">"
+                               		"<b>%s</b>"
+									"</span>",value);
+									
+		gtk_label_set_markup (GTK_LABEL (ui_alarm.label1[i]), markup);
+		g_free (markup);
+
+		ui_alarm.icon_edit = gtk_image_new ();
+		ui_alarm.icon_remove = gtk_image_new ();
+		ui_load_image_helper(&ui_alarm.icon_edit,30,30,"asset/img/edit.png");
+		ui_load_image_helper(&ui_alarm.icon_remove,30,30,"asset/img/remove.png");
+
+		ui_alarm.button_edit_alarm[i] = gtk_button_new ();
+		ui_alarm.button_delete_alarm[i] = gtk_button_new ();
+
+		gtk_button_set_image(ui_alarm.button_edit_alarm[i],ui_alarm.icon_edit);
+		gtk_button_set_image(ui_alarm.button_delete_alarm[i],ui_alarm.icon_remove);
+
+		gtk_box_pack_start(GTK_BOX(ui_alarm.hbox[i]), ui_alarm.label1[i], 1, 0, 5);
+		gtk_box_pack_start(GTK_BOX(ui_alarm.hbox[i]), ui_alarm.label2[i], 1, 0, 5);
+		gtk_box_pack_start(GTK_BOX(ui_alarm.hbox[i]), ui_alarm.button_edit_alarm[i], 0, 0, 1);
+		gtk_box_pack_start(GTK_BOX(ui_alarm.hbox[i]), ui_alarm.button_delete_alarm[i], 0, 0, 1);
+
+		i++;
+	}
+
+	// if(i < 20){
+	// 	ui_alarm.label1[i] = gtk_label_new(NULL);
+	// 	ui_alarm.label2[i] = gtk_label_new("Message123213213213121231232131321");
+
+	// 	const char *value = "Alarm";
+	// 	char *markup = g_strdup_printf ("<span font=\"14\" color=\"red\">"
+    //                            		"<b>%s</b>"
+	// 								"</span>",value);
+									
+	// 	gtk_label_set_markup (GTK_LABEL (ui_alarm.label1[i]), markup);
+	// 	g_free (markup);
+
+	// 	ui_alarm.icon_edit = gtk_image_new ();
+	// 	ui_alarm.icon_remove = gtk_image_new ();
+	// 	ui_load_image_helper(&ui_alarm.icon_edit,30,30,"asset/img/edit.png");
+	// 	ui_load_image_helper(&ui_alarm.icon_remove,30,30,"asset/img/remove.png");
+
+	// 	ui_alarm.button_edit_alarm[i] = gtk_button_new ();
+	// 	ui_alarm.button_delete_alarm[i] = gtk_button_new ();
+
+	// 	gtk_button_set_image(ui_alarm.button_edit_alarm[i],ui_alarm.icon_edit);
+	// 	gtk_button_set_image(ui_alarm.button_delete_alarm[i],ui_alarm.icon_remove);
+
+	// 	gtk_label_set_justify (GTK_LABEL(ui_alarm.label1[i]), GTK_JUSTIFY_CENTER);
+	// 	gtk_label_set_justify (GTK_LABEL(ui_alarm.label2[i]), GTK_JUSTIFY_CENTER);
+
+	// 	gtk_grid_attach (GTK_GRID(ui_alarm.grid_alarm)	, ui_alarm.label1[i], 1, i, 1, 1);
+	// 	gtk_grid_attach (GTK_GRID(ui_alarm.grid_message), ui_alarm.label2[i], 1, i, 1, 1);
+	// 	gtk_grid_attach (GTK_GRID(ui_alarm.grid_edit)	, ui_alarm.button_edit_alarm[i], 1, i, 1, 1);
+	// 	gtk_grid_attach (GTK_GRID(ui_alarm.grid_delete)	, ui_alarm.button_delete_alarm[i], 1, i, 1, 1);
+	// 	i++;
+	// }
 }
