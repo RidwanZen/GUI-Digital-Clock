@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <dirent.h>
 
 #include "../inc/ui_window.h"
 #include "../inc/fungsiDebug.h"
@@ -14,10 +15,12 @@
 
 #define GLADE_FILE      "ui_clock.glade"
 #define CSS_FILE      	"style.css"
+#define RINGTONES_FILE  "asset/Ringtones/"
 #define VERSION         "V0.1"
 
 Window_clock ui_clock;
 Window_alarm ui_alarm;
+Window_set_alarm ui_set_alarm;
 
 const char *day_name[];
 
@@ -43,6 +46,7 @@ int main(int argc, char **argv)
 	gtk_mainWindow_connect();
 	ui_gtk_set_image();
 	gtk_builder_connect_signals(builder, NULL);
+	set_alarm();
 	g_timeout_add_seconds(1, (GSourceFunc) ui_update, NULL);
     gtk_widget_show(ui_clock.window);
 	g_object_unref(builder);
@@ -107,21 +111,35 @@ void ui_gtk_get_object(){
 	gtk_get_object_helper(&ui_clock.button_alarm	, "bt_alarm");
 
 
-	gtk_get_object_helper(&ui_alarm.window_alarm	, "window_alarm");
-	gtk_get_object_helper(&ui_alarm.w_alarm_box		, "w_alarm_box");
-	gtk_get_object_helper(&ui_alarm.box4			, "box4");
-	gtk_get_object_helper(&ui_alarm.box5			, "box5");
-	gtk_get_object_helper(&ui_alarm.scroller_window	, "scroller_window");
-	gtk_get_object_helper(&ui_alarm.view_port		, "view_port");
-	// gtk_get_object_helper(&ui_alarm.grid_alarm		, "grid_alarm");
-	// gtk_get_object_helper(&ui_alarm.grid_message	, "grid_message");
-	// gtk_get_object_helper(&ui_alarm.grid_edit		, "grid_edit");
-	// gtk_get_object_helper(&ui_alarm.grid_delete		, "grid_delete");
-	gtk_get_object_helper(&ui_alarm.button_close	, "bt_close");
+	gtk_get_object_helper(&ui_alarm.window_alarm		, "window_alarm");
+	gtk_get_object_helper(&ui_alarm.w_alarm_box			, "w_alarm_box");
+	gtk_get_object_helper(&ui_alarm.box4				, "box4");
+	gtk_get_object_helper(&ui_alarm.box5				, "box5");
+	gtk_get_object_helper(&ui_alarm.scroller_window		, "scroller_window");
+	gtk_get_object_helper(&ui_alarm.view_port			, "view_port");
+	gtk_get_object_helper(&ui_alarm.button_close		, "bt_close");
 	gtk_get_object_helper(&ui_alarm.button_add_alarm	, "bt_add_alarm");
 	gtk_get_object_helper(&ui_alarm.label_header_alarm	, "lb_header_alarm");
 	gtk_get_object_helper(&ui_alarm.label_list_alarm	, "lb_list_alarm");
 	gtk_get_object_helper(&ui_alarm.label_list_message	, "lb_list_message");
+
+
+	gtk_get_object_helper(&ui_set_alarm.window_set_alarm		, "window_set_alarm");
+	gtk_get_object_helper(&ui_set_alarm.box_set_alarm			, "box_set_alarm");
+	gtk_get_object_helper(&ui_set_alarm.box_message				, "box_message");
+	gtk_get_object_helper(&ui_set_alarm.box_time_alarm			, "box_time_alarm");
+	gtk_get_object_helper(&ui_set_alarm.box_ringtones			, "box_ringtones");
+	gtk_get_object_helper(&ui_set_alarm.box_tombol				, "box_tombol");
+	gtk_get_object_helper(&ui_set_alarm.combo_box_jam			, "combo_box_jam");
+	gtk_get_object_helper(&ui_set_alarm.combo_box_menit			, "combo_box_menit");
+	gtk_get_object_helper(&ui_set_alarm.combo_box_ringtones		, "combo_box_ringtones");
+	gtk_get_object_helper(&ui_set_alarm.label_header_set_alarm	, "lb_header_set_alarm");
+	gtk_get_object_helper(&ui_set_alarm.label_1					, "lb1");
+	gtk_get_object_helper(&ui_set_alarm.label_message			, "lb_set_message");
+	gtk_get_object_helper(&ui_set_alarm.label_ringtone			, "lb_ringtones");
+	gtk_get_object_helper(&ui_set_alarm.entry_message			, "entry_message");
+	gtk_get_object_helper(&ui_set_alarm.button_ok				, "bt_ok");
+	gtk_get_object_helper(&ui_set_alarm.button_cancel			, "bt_cancel");
 
 gboolean ui_is_gui_running()
 	{
@@ -143,14 +161,25 @@ void gtk_mainWindow_setAttrib(){
 }
 
 static void view_windowAlarm(){
-	// gtk_widget_show(ui_alarm.window_alarm);
+	debug(__func__,"INFO:","Open Window_Alarm");
 	gtk_widget_show_all(ui_alarm.window_alarm);
 	gtk_widget_hide(ui_clock.window);
 }
 
 static void close_windowAlarm(){
+	debug(__func__,"INFO:","Close Window_Alarm");
 	gtk_widget_show_all(ui_clock.window);
 	gtk_widget_hide(ui_alarm.window_alarm);
+}
+
+static void view_window_SetAlarm(){
+	debug(__func__,"INFO:","Open Window_SetAlarm");
+	gtk_widget_show_all(ui_set_alarm.window_set_alarm);
+}
+
+static void close_window_SetAlarm(){
+	debug(__func__,"INFO:","Close Window_SetAlarm");
+	gtk_widget_hide(ui_set_alarm.window_set_alarm);
 }
 
 void ui_gtk_set_image(){
@@ -167,6 +196,8 @@ static void ui_gtk_widget_signal_connect(){
 void gtk_mainWindow_connect(){
 	g_signal_connect(ui_clock.button_alarm, "clicked", G_CALLBACK (view_windowAlarm), NULL);
 	g_signal_connect(ui_alarm.button_close, "clicked", G_CALLBACK (close_windowAlarm), NULL);
+	g_signal_connect(ui_alarm.button_add_alarm, "clicked", G_CALLBACK (view_window_SetAlarm), NULL);
+	g_signal_connect(ui_set_alarm.button_cancel, "clicked", G_CALLBACK (close_window_SetAlarm), NULL);
 }
 
 static gboolean ui_set_label_color(GtkWidget **_widget, char *_color){
@@ -221,7 +252,7 @@ static void ui_lbl_dtime(){
     stim_get_date_custom_auto(tmp,date_format_custom1_eng);
     gtk_label_set_text ((GtkLabel *) ui_clock.label_tanggal, tmp);	
     //set waktu (jam & menit)
-	stim_get_time_colon_auto(tmp,hhmm,format_12);
+	stim_get_time_colon_auto(tmp,hhmm,format_24);
     gtk_label_set_text ((GtkLabel *) ui_clock.value_waktu, tmp);
 	//set detik
 	stim_get_time_colon_auto(tmp,ss,NULL);
@@ -302,4 +333,102 @@ void list_alarm(){
 	// 	gtk_grid_attach (GTK_GRID(ui_alarm.grid_delete)	, ui_alarm.button_delete_alarm[i], 1, i, 1, 1);
 	// 	i++;
 	// }
+}
+
+enum
+{
+  TEXT_COL,
+  ICON_NAME_COL
+
+};
+
+
+typedef struct _wrapper {
+    char * text;
+} Wrapper;
+
+static void wrapper2text(GtkCellLayout *cell_layout, GtkCellRenderer *cell,
+   			GtkTreeModel *model, GtkTreeIter *iter, gpointer data) 
+{
+    Wrapper * w;
+    gtk_tree_model_get (model, iter, 0, &w, -1);
+    g_object_set (cell, "text", w->text, NULL);
+}
+
+static void add_text(GtkListStore *model, char *text) {
+    GtkTreeIter new_row;
+    Wrapper * w;
+     w = g_new0(Wrapper, 1);
+    w->text = g_strdup(text);
+    gtk_list_store_append(model, &new_row);
+    gtk_list_store_set(model, &new_row, 0, w, -1);
+}
+
+char *IntToStr(int x){
+	char *str=(char *)malloc(1 * sizeof (char));	// Mengalokasikan blok memory sebesar 1byte dan di pointing ke pointer str
+	sprintf(str, "%02d", x);	// Memasukkan data integer x ke str
+	return str;
+}
+
+
+void set_alarm(){
+	GtkListStore * ringtones;
+    GtkListStore * model_jam, *model_menit;
+    GType *columns;
+	GtkCellRenderer *renderer;;
+	char str[100];
+
+	columns = g_new0 (GType, 1);
+    columns[0] = G_TYPE_POINTER;
+    model_jam = gtk_list_store_newv(1, columns);
+    model_menit = gtk_list_store_newv(1, columns);
+    ringtones = gtk_list_store_newv(1, columns);
+	get_list_ringtones(ringtones,str);
+	for(int a=0;a<60;a++){
+		if(a <= 23 )
+			add_text(model_jam, IntToStr(a));
+    	
+		add_text(model_menit, IntToStr(a));
+	}
+    g_free(columns);
+    // ui_set_alarm.combo_box_menit = gtk_combo_box_new_with_model_and_entry(GTK_TREE_MODEL(model));
+	gtk_combo_box_set_entry_text_column(ui_set_alarm.combo_box_menit,0);
+	gtk_combo_box_set_entry_text_column(ui_set_alarm.combo_box_jam,0);
+	gtk_combo_box_set_entry_text_column(ui_set_alarm.combo_box_ringtones,0);
+	gtk_combo_box_set_model(ui_set_alarm.combo_box_menit,model_menit);
+	gtk_combo_box_set_model(ui_set_alarm.combo_box_jam,model_jam);
+	gtk_combo_box_set_model(ui_set_alarm.combo_box_ringtones,ringtones);
+    renderer = gtk_cell_renderer_text_new();
+    gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(ui_set_alarm.combo_box_menit), renderer, TRUE);
+    gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(ui_set_alarm.combo_box_jam), renderer, TRUE);
+    gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(ui_set_alarm.combo_box_ringtones), renderer, TRUE);
+    gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT(ui_set_alarm.combo_box_menit), renderer, NULL);
+    gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT(ui_set_alarm.combo_box_jam), renderer, NULL);
+    gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT(ui_set_alarm.combo_box_ringtones), renderer, NULL);
+    gtk_cell_layout_set_cell_data_func(GTK_CELL_LAYOUT(ui_set_alarm.combo_box_menit), renderer,wrapper2text, NULL, NULL);
+    gtk_cell_layout_set_cell_data_func(GTK_CELL_LAYOUT(ui_set_alarm.combo_box_jam), renderer,wrapper2text, NULL, NULL);
+    gtk_cell_layout_set_cell_data_func(GTK_CELL_LAYOUT(ui_set_alarm.combo_box_ringtones), renderer,wrapper2text, NULL, NULL);
+
+}
+
+void get_list_ringtones(GtkListStore *_gtklist, char *_str){
+	DIR *d;
+    struct dirent *dir;
+    d = opendir(RINGTONES_FILE);
+
+    if (d)
+    {
+        while ((dir = readdir(d)) != NULL)
+        {	
+			memset(_str,0,sizeof(_str));
+			sprintf(_str,"%s",dir->d_name);
+			if(strcmp(_str,"."))
+				if(strcmp(_str,"..")){
+					add_text(_gtklist, _str);
+            		printf("%s\n", _str);
+				}
+        }
+        closedir(d);
+    }
+
 }

@@ -71,6 +71,29 @@ typedef struct _window_alarm
 
 extern Window_alarm ui_alarm;
 
+typedef struct _window_set_alarm
+{
+    GtkWidget *window_set_alarm;
+    GtkWidget *box_set_alarm;
+    GtkWidget *box_message;
+    GtkWidget *box_time_alarm;
+    GtkWidget *box_ringtones;
+    GtkWidget *box_tombol;
+    GtkWidget *combo_box_jam;
+    GtkWidget *combo_box_menit;
+    GtkWidget *combo_box_ringtones;
+    GtkWidget *label_header_set_alarm;
+    GtkWidget *label_message;
+    GtkWidget *label_ringtone;
+    GtkWidget *label_1;
+    GtkWidget *entry_message;
+    GtkWidget *button_ok;
+    GtkWidget *button_cancel;
+
+}Window_set_alarm;
+
+extern Window_set_alarm ui_set_alarm;
+
 // typedef struct _day_name
 // {
 //     char *sunday = "SUN";
@@ -111,7 +134,16 @@ static void ui_lbl_dtime();
 
 static void view_windowAlarm();
 static void close_windowAlarm();
-
+static void view_window_SetAlarm();
+static void close_window_SetAlarm();
+char *IntToStr(int x);
 void list_alarm();
+void set_alarm();
+static void add_text(GtkListStore *model, char *text);
+static void wrapper2text(GtkCellLayout *cell_layout, GtkCellRenderer *cell,
+   			GtkTreeModel *model, GtkTreeIter *iter, gpointer data) ;
+
+
+void get_list_ringtones(GtkListStore *_gtklist, char *_str);
 
 #endif
