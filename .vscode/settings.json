@@ -1,5 +1,8 @@
 {
     "files.associations": {
-        "stdarg.h": "c"
+        "stdarg.h": "c",
+        "sql.h": "c",
+        "shiki-time-tools.h": "c",
+        "sqlite3.h": "c"
     }
 }

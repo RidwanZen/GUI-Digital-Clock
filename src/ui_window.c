@@ -8,9 +8,11 @@
 #include <string.h>
 #include <time.h>
 #include <dirent.h>
+#include <pthread.h>
 
 #include "../inc/ui_window.h"
 #include "../inc/fungsiDebug.h"
+#include "../inc/sql.h"
 #include "shiki-time-tools/shiki-time-tools.h"
 
 #define GLADE_FILE      "ui_clock.glade"
@@ -27,11 +29,11 @@ const char *day_name[];
 GtkBuilder *builder;
 GtkCssProvider *cssProvider;
 
-
+static pthread_mutex_t lockCount = PTHREAD_MUTEX_INITIALIZER;
 
 gboolean isGuiRunning = FALSE;
 
-int i=0;
+int i=0, z=0;
 
 int main(int argc, char **argv)
 {
@@ -47,6 +49,9 @@ int main(int argc, char **argv)
 	ui_gtk_set_image();
 	gtk_builder_connect_signals(builder, NULL);
 	set_alarm();
+	enco_sql_open_buffer();
+	sql_select_table ();
+	th_alarm_start();
 	g_timeout_add_seconds(1, (GSourceFunc) ui_update, NULL);
     gtk_widget_show(ui_clock.window);
 	g_object_unref(builder);
@@ -175,11 +180,13 @@ static void close_windowAlarm(){
 static void view_window_SetAlarm(){
 	debug(__func__,"INFO:","Open Window_SetAlarm");
 	gtk_widget_show_all(ui_set_alarm.window_set_alarm);
+	sql_insert_alarm_list("12:12","baka","aho");
 }
 
 static void close_window_SetAlarm(){
 	debug(__func__,"INFO:","Close Window_SetAlarm");
 	gtk_widget_hide(ui_set_alarm.window_set_alarm);
+	cek_quary();
 }
 
 void ui_gtk_set_image(){
@@ -237,7 +244,6 @@ gboolean ui_update(gpointer not_used){
 
 	ui_lbl_dtime(NULL);
 	list_alarm();
-
 	return TRUE;
 }
 
@@ -267,14 +273,15 @@ static void ui_lbl_dtime(){
 }
 
 void list_alarm(){
-
-	if(i<10){
+	
+	if(i<count){
+		sql_GetValue_alarm();
 		ui_alarm.hbox[i] = gtk_hbox_new(0,0);
 		gtk_container_add(GTK_CONTAINER(ui_alarm.box5), ui_alarm.hbox[i]);
 
 		ui_alarm.label1[i] = gtk_label_new(NULL);
-		ui_alarm.label2[i] = gtk_label_new("Message123213213213121231232131321");
-		const char *value = "Alarm";
+		ui_alarm.label2[i] = gtk_label_new(alarm_mesg);
+		const char *value = alarm_time;
 		char *markup = g_strdup_printf ("<span font=\"14\" color=\"red\">"
                                		"<b>%s</b>"
 									"</span>",value);
@@ -301,38 +308,6 @@ void list_alarm(){
 		i++;
 	}
 
-	// if(i < 20){
-	// 	ui_alarm.label1[i] = gtk_label_new(NULL);
-	// 	ui_alarm.label2[i] = gtk_label_new("Message123213213213121231232131321");
-
-	// 	const char *value = "Alarm";
-	// 	char *markup = g_strdup_printf ("<span font=\"14\" color=\"red\">"
-    //                            		"<b>%s</b>"
-	// 								"</span>",value);
-									
-	// 	gtk_label_set_markup (GTK_LABEL (ui_alarm.label1[i]), markup);
-	// 	g_free (markup);
-
-	// 	ui_alarm.icon_edit = gtk_image_new ();
-	// 	ui_alarm.icon_remove = gtk_image_new ();
-	// 	ui_load_image_helper(&ui_alarm.icon_edit,30,30,"asset/img/edit.png");
-	// 	ui_load_image_helper(&ui_alarm.icon_remove,30,30,"asset/img/remove.png");
-
-	// 	ui_alarm.button_edit_alarm[i] = gtk_button_new ();
-	// 	ui_alarm.button_delete_alarm[i] = gtk_button_new ();
-
-	// 	gtk_button_set_image(ui_alarm.button_edit_alarm[i],ui_alarm.icon_edit);
-	// 	gtk_button_set_image(ui_alarm.button_delete_alarm[i],ui_alarm.icon_remove);
-
-	// 	gtk_label_set_justify (GTK_LABEL(ui_alarm.label1[i]), GTK_JUSTIFY_CENTER);
-	// 	gtk_label_set_justify (GTK_LABEL(ui_alarm.label2[i]), GTK_JUSTIFY_CENTER);
-
-	// 	gtk_grid_attach (GTK_GRID(ui_alarm.grid_alarm)	, ui_alarm.label1[i], 1, i, 1, 1);
-	// 	gtk_grid_attach (GTK_GRID(ui_alarm.grid_message), ui_alarm.label2[i], 1, i, 1, 1);
-	// 	gtk_grid_attach (GTK_GRID(ui_alarm.grid_edit)	, ui_alarm.button_edit_alarm[i], 1, i, 1, 1);
-	// 	gtk_grid_attach (GTK_GRID(ui_alarm.grid_delete)	, ui_alarm.button_delete_alarm[i], 1, i, 1, 1);
-	// 	i++;
-	// }
 }
 
 enum
@@ -391,6 +366,7 @@ void set_alarm(){
 		add_text(model_menit, IntToStr(a));
 	}
     g_free(columns);
+	// gtk_combo_box_set_active(GTK_COMBO_BOX(ui_set_alarm.combo_box_ringtones), -1);
     // ui_set_alarm.combo_box_menit = gtk_combo_box_new_with_model_and_entry(GTK_TREE_MODEL(model));
 	gtk_combo_box_set_entry_text_column(ui_set_alarm.combo_box_menit,0);
 	gtk_combo_box_set_entry_text_column(ui_set_alarm.combo_box_jam,0);
@@ -431,4 +407,30 @@ void get_list_ringtones(GtkListStore *_gtklist, char *_str){
         closedir(d);
     }
 
+}
+
+void alarm_start(){
+
+	// const gchar *tmp = NULL;
+	char tmp[10];
+	char *alarm_time="21:53";
+
+	while(1){
+	// tmp = gtk_label_get_text(ui_clock.value_waktu);
+	stim_get_time_colon_auto(tmp,hhmm,format_24);
+	if(!strcmp(tmp, alarm_time))
+		system("mpv asset/Ringtones/papa_ohayou.mp3");
+	}
+	
+}
+
+int8_t th_alarm_start()
+{
+	pthread_t th_s;
+	if(pthread_create(&th_s,NULL,alarm_start,NULL))
+	{
+		debug(__func__, "INFO:", "ALARM START THREAD FAILED");
+		return 1;
+	}
+	return 0;
 }

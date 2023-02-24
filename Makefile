@@ -60,6 +60,7 @@ SHIKI_TOOLS = lib/shiki-system-tools/shiki-system-tools.c \
 
 SOURCE = src/ui_window.c \
 		 src/fungsiDebug.c \
+         src/sql.c \
          $(SHIKI_TOOLS)
 
 TARGET          = Gui_Clock
