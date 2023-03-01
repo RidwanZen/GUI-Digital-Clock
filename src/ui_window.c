@@ -275,7 +275,7 @@ static void ui_lbl_dtime(){
 void list_alarm(){
 	
 	if(i<count){
-		sql_GetValue_alarm();
+		sql_select_table ();
 		ui_alarm.hbox[i] = gtk_hbox_new(0,0);
 		gtk_container_add(GTK_CONTAINER(ui_alarm.box5), ui_alarm.hbox[i]);
 

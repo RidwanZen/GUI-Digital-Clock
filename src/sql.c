@@ -140,6 +140,7 @@ void sql_select_table ()
 	sqlite3_finalize(select_alarm);
 	sqlite3_prepare_v2(db, "SELECT * FROM alarm", -1, &select_alarm, NULL);
 	cek_quary();
+	sql_GetValue_alarm();
 	// printf("sukses select table\n");
 	sqlite3_close(db);
 
