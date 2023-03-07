@@ -72,6 +72,7 @@ alarmlist_open:
 	  memset(tmp,0,28*sizeof(char));
 	  sprintf(tmp,"sudo touch log/alarm_list.db");
 	  system(tmp);
+	  system("mkdir log");
 	  sleep(1);
 	  goto alarmlist_open;
 	}
