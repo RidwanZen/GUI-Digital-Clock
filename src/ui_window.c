@@ -12,6 +12,7 @@
 
 #include "../inc/ui_window.h"
 #include "../inc/fungsiDebug.h"
+#include "../inc/main.h"
 #include "../inc/sql.h"
 #include "shiki-time-tools/shiki-time-tools.h"
 
@@ -175,18 +176,19 @@ static void close_windowAlarm(){
 	debug(__func__,"INFO:","Close Window_Alarm");
 	gtk_widget_show_all(ui_clock.window);
 	gtk_widget_hide(ui_alarm.window_alarm);
+	Refresh();
 }
 
 static void view_window_SetAlarm(){
 	debug(__func__,"INFO:","Open Window_SetAlarm");
 	gtk_widget_show_all(ui_set_alarm.window_set_alarm);
-	sql_insert_alarm_list("12:12","baka","aho");
+	sql_insert_alarm_list("12:12","baka","Konnichiwa");
 }
 
 static void close_window_SetAlarm(){
 	debug(__func__,"INFO:","Close Window_SetAlarm");
 	gtk_widget_hide(ui_set_alarm.window_set_alarm);
-	cek_quary();
+	// cek_quary();
 }
 
 void ui_gtk_set_image(){
@@ -273,9 +275,9 @@ static void ui_lbl_dtime(){
 }
 
 void list_alarm(){
-	
-	if(i<count){
-		sql_select_table ();
+	cek_quary();
+	for(i; i < count ; i++){
+		sql_GetValue_alarm();
 		ui_alarm.hbox[i] = gtk_hbox_new(0,0);
 		gtk_container_add(GTK_CONTAINER(ui_alarm.box5), ui_alarm.hbox[i]);
 
@@ -300,12 +302,16 @@ void list_alarm(){
 		gtk_button_set_image(ui_alarm.button_edit_alarm[i],ui_alarm.icon_edit);
 		gtk_button_set_image(ui_alarm.button_delete_alarm[i],ui_alarm.icon_remove);
 
-		gtk_box_pack_start(GTK_BOX(ui_alarm.hbox[i]), ui_alarm.label1[i], 1, 0, 5);
+		gtk_box_pack_start(GTK_BOX(ui_alarm.hbox[i]), ui_alarm.label1[i], 0, 1, 30);
 		gtk_box_pack_start(GTK_BOX(ui_alarm.hbox[i]), ui_alarm.label2[i], 1, 0, 5);
-		gtk_box_pack_start(GTK_BOX(ui_alarm.hbox[i]), ui_alarm.button_edit_alarm[i], 0, 0, 1);
-		gtk_box_pack_start(GTK_BOX(ui_alarm.hbox[i]), ui_alarm.button_delete_alarm[i], 0, 0, 1);
+		gtk_box_pack_end(GTK_BOX(ui_alarm.hbox[i]), ui_alarm.button_delete_alarm[i], 0, 0, 1);
+		gtk_box_pack_end(GTK_BOX(ui_alarm.hbox[i]), ui_alarm.button_edit_alarm[i], 0, 0, 1);
 
-		i++;
+		// memset(alarm_time,0,sizeof(char));
+		// memset(alarm_mesg,0,sizeof(char));
+		// memset(alarm_ringtones,0,sizeof(char));
+
+		// i++;
 	}
 
 }
@@ -413,12 +419,12 @@ void alarm_start(){
 
 	// const gchar *tmp = NULL;
 	char tmp[10];
-	char *alarm_time="21:53";
+	char *alarm_time_set="16:34";
 
 	while(1){
 	// tmp = gtk_label_get_text(ui_clock.value_waktu);
 	stim_get_time_colon_auto(tmp,hhmm,format_24);
-	if(!strcmp(tmp, alarm_time))
+	if(!strcmp(tmp, alarm_time_set))
 		system("mpv asset/Ringtones/papa_ohayou.mp3");
 	}
 	
@@ -433,4 +439,21 @@ int8_t th_alarm_start()
 		return 1;
 	}
 	return 0;
+}
+
+/* Function refresh UI */
+void Refresh()
+{
+	int z = 0;
+	 /* pengulangan untuk menghapus label */
+    for(z;z < count;z++){
+		gtk_widget_destroy(ui_alarm.label1[z]);
+		gtk_widget_destroy(ui_alarm.label2[z]);
+		gtk_widget_destroy(ui_alarm.button_delete_alarm[z]);
+		gtk_widget_destroy(ui_alarm.button_edit_alarm[z]);
+		
+	}
+	debug(__func__, "INFO:", "DESTROY LIST ALARM SUCCESS, %d",z);
+	i = 0;
+	count = 0;
 }

@@ -147,4 +147,7 @@ static void wrapper2text(GtkCellLayout *cell_layout, GtkCellRenderer *cell,
 void get_list_ringtones(GtkListStore *_gtklist, char *_str);
 void alarm_start();
 int8_t th_alarm_start();
+
+void Refresh();
+
 #endif

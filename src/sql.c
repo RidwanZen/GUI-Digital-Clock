@@ -5,6 +5,7 @@
 #include <time.h>
 #include <unistd.h>
 
+#include "../inc/main.h"
 #include "../inc/sql.h"
 
 #define ALARM_FILE     "log/alarm_list.db"
@@ -127,23 +128,23 @@ int sql_insert_alarm_list(const char *_alarm_time, char *_ringtone, char *_mesg,
 }
 
 // function select table database
-void sql_select_table ()
+int sql_select_table ()
 {
 	sqlite3 *db;
-	
+	sqlite3_finalize(select_alarm);
 	// cek open db nya 
 	if(sqlite3_open(ALARM_FILE, &db) != SQLITE_OK){
 		debug(__func__, "ERROR", "can't open database: %s", sqlite3_errmsg(db));
 		sqlite3_close(db);
 		return -1;
 	}
-	sqlite3_finalize(select_alarm);
 	sqlite3_prepare_v2(db, "SELECT * FROM alarm", -1, &select_alarm, NULL);
-	cek_quary();
-	sql_GetValue_alarm();
-	// printf("sukses select table\n");
+	
+	// cek_quary();
+	// sql_GetValue_alarm();
+	printf("sukses select table\n");
 	sqlite3_close(db);
-
+	return 0;
 }
 
 void cek_quary(){
@@ -163,8 +164,8 @@ void sql_GetValue_alarm()
 		// select table alarm
 		if (sqlite3_step(select_alarm) == SQLITE_ROW) {
 			alarm_time = sqlite3_column_text(select_alarm, 0);
-			alarm_mesg = sqlite3_column_text(select_alarm, 1);
-			alarm_ringtones = sqlite3_column_text(select_alarm, 2);
+			alarm_mesg = sqlite3_column_text(select_alarm, 2);
+			alarm_ringtones = sqlite3_column_text(select_alarm, 1);
 
 			// count++;
 		}
